@@ -1,3 +1,5 @@
+# WIP - to be updated in a week
+
 # masked-face-verification
 This repository contains the files for analysis of Masked Face Verification.
 
