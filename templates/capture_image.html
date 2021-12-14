@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Masked Face Recognition Demo</title>
+  
+  <!-- FavIcon config -->
+  <link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="static/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="static/favicon/favicon-16x16.png">
+  <link rel="manifest" href="static/favicon/site.webmanifest">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="shortcut icon" type="image/x-icon" href="static/favicon/favicon.ico" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand mb-0 h1 mx-auto">Masked Face Recognition Demo</span>
+  </nav>
+
+  <div class="container mt-5">
+
+    <div class="row mt-5">
+
+      <div class="col-md-6 col-xs-12">
+        <div id="my_camera" style="width: 520px; height: 400px; transform: scaleX(1);">
+          <h4 class="text-center">Usage</h4>
+          <ul>
+            <li>Start Camera</li>
+            <li>Start Recognition</li>
+            <li>Stop Camera</li>
+          </ul>
+          <div class="alerts alert alert-danger mt-4">
+            Start the camera for recognition
+          </div>
+        </div><br/>
+        <input type=button value="Start Camera" class="btn btn-primary pull-right" onClick="start_camera()">
+        <input type="button" value="Start Recognition" class="btn btn-success" onclick="start_detection()">
+        <input type="button" value="Stop Camera" class="btn btn-danger" onclick="stop_camera()">
+        <input type="hidden" name="image" class="image-tag">
+        <br/>
+
+        <div class="custom mt-5">
+
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xs-12">
+        <div id="results" class="text-center">
+          Start Recognition to see real-time results
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+      var timeout;
+
+      Webcam.on( 'error', function() {
+          $(".alerts").fadeTo(2000, 500);
+      });
+
+      function start_camera() {
+          Webcam.set({
+              width: 520,
+              height: 400,
+              image_format: 'jpeg',
+              jpeg_quality: 120,
+              flip_horiz: true
+
+          });
+
+          Webcam.attach( '#my_camera' );
+      }
+
+      function start_detection() {
+          Webcam.snap( function(data_uri) {
+              $(".image-tag").val(data_uri);
+              const data = {"image": data_uri};
+              $.ajax({
+                  type: 'POST',
+                  url: '/detect-face',
+                  data: JSON.stringify(data),
+                  contentType: false,
+                  cache: false,
+                  processData: false,
+                  success: function(response) {
+                      document.getElementById('results').innerHTML = '<img src="'+response["image"]+'"/>';
+                      // console.log(response["data"]);
+                      timeout = setTimeout(start_detection, 0);
+                  },
+                  error: function(e) {
+                      e.preventDefault();
+                  }
+              });
+          });
+      }
+
+      function stop_camera() {
+          try {
+              Webcam.reset();
+          }
+          catch (e) {}
+
+          clearTimeout(timeout);
+          $("#my_camera").html(
+              '<h4 class="text-center">Usage</h4>' +
+              '<ul>' +
+                '<li>Start Camera</li>' +
+                '<li>Start Recognition</li>' +
+                '<li>Stop Camera</li>' +
+              '</ul>' +
+              '<div class="alerts alert alert-danger mt-4">\n' +
+                'Start the camera for recognition\n' +
+              '</div>'
+          );
+          $('.alerts').hide();
+
+          $('#results').html('Start Recognition to see real-time results');
+      }
+
+      $(document).ready(function () {
+          $('#custom-submit').on('click', function () {
+              var data = new FormData($('#image-form')[0]);
+              console.log(data);
+              $.ajax({
+                  type: 'POST',
+                  url: '/detect-custom',
+                  data: data,
+                  contentType: false,
+                  cache: false,
+                  processData: false,
+                  success: function (response) {
+                      $('#results').html('<img src="' + response["image"] + '" width="520" height="400"/>');
+                      console.log(response["image"]);
+                      timeout = setTimeout(start_detection, 0);
+                  },
+                  error: function (e) {
+                      console.log(e);
+                  }
+              });
+          })
+
+          $('.alerts').hide();
+      });
+
+    </script>
+</body>
+</html>
