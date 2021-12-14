@@ -1,6 +1,6 @@
-# WIP - to be updated in a week
+# Masked Face Verificaiton
 
-# masked-face-verification
-This repository contains the files for analysis of Masked Face Verification.
+Using Aggregated Verification, we attempt to use the existing Face Verification models to adapt with the masked images.
 
-Read the blog at: https://byteiota.com/masked-face-verification/
+This repository was used in the blog: https://byteiota.com/masked-face-verification/
+
