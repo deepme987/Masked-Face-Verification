@@ -1,3 +1,6 @@
+"""
+Quick took to resize the images in faces to 200x200px
+"""
 from PIL import Image
 import os, sys
 
