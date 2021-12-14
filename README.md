@@ -14,7 +14,7 @@ Instead of re-training a new model or fine-tuning existing models, we leverage t
 
 ### Demo
 
-![alt text](http://url/to/img.png)
+![Masked Face Verification Demo](https://github.com/deepme987/Masked-Face-Verification/blob/342fd0cc630ecf8584a03ed42a5d7fd6b0949bd8/assets/demo.gif)
 
 ### To run the demo
 
@@ -41,7 +41,7 @@ Make sure that your images are not large. To be sure, you can run `image_resizer
 
 # Performance Evaluation
 
-![alt text](http://url/to/img.png)
+![Performance](https://github.com/deepme987/Masked-Face-Verification/blob/342fd0cc630ecf8584a03ed42a5d7fd6b0949bd8/assets/Performance.png)
 
 # References:
 
